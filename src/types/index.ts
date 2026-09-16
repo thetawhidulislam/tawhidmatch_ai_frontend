@@ -66,6 +66,29 @@ export interface JobMatch {
   resumeId: string;
 }
 
+export type ApplicationStatus =
+  | "APPLIED"
+  | "SHORTLISTED"
+  | "INTERVIEW"
+  | "REJECTED"
+  | "HIRED";
+
+export interface Application {
+  id: string;
+  userId: string;
+  jobId: string;
+  resumeId: string;
+  status: ApplicationStatus;
+  appliedAt: string;
+  updatedAt: string;
+  job: {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+  };
+}
+
 export interface Pagination {
   page: number;
   limit: number;
