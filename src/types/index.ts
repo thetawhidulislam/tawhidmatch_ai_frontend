@@ -89,6 +89,41 @@ export interface Application {
   };
 }
 
+export type InterviewStatus = "IN_PROGRESS" | "COMPLETED";
+
+export interface InterviewQuestion {
+  id: string;
+  questionText: string;
+  order: number;
+  answer?: { answerText: string } | null;
+}
+
+export interface Interview {
+  id: string;
+  userId: string;
+  jobId: string;
+  status: InterviewStatus;
+  technicalScore: number | null;
+  communicationScore: number | null;
+  problemSolvingScore: number | null;
+  confidenceScore: number | null;
+  overallScore: number | null;
+  strengths: string[];
+  improvements: string[];
+  createdAt: string;
+  updatedAt: string;
+  questions: InterviewQuestion[];
+}
+
+export interface InterviewListItem {
+  id: string;
+  jobId: string;
+  status: InterviewStatus;
+  overallScore: number | null;
+  createdAt: string;
+  job: { title: string; company: string };
+}
+
 export interface Pagination {
   page: number;
   limit: number;
