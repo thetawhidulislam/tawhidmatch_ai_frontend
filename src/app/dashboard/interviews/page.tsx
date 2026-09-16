@@ -55,7 +55,7 @@ export default function InterviewsPage() {
             message={getErrorMessage(interviewsQuery.error)}
             onRetry={() => interviewsQuery.refetch()}
           />
-        ) : interviewsQuery.data.length === 0 ? (
+        ) : !interviewsQuery.data || interviewsQuery.data.length === 0 ? (
           <EmptyState
             icon={MessagesSquare}
             title="No interviews yet"

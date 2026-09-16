@@ -124,6 +124,31 @@ export interface InterviewListItem {
   job: { title: string; company: string };
 }
 
+export interface AdminStats {
+  totalUsers: number;
+  totalJobs: number;
+  openJobs: number;
+  totalApplications: number;
+  completedInterviews: number;
+  totalResumes: number;
+}
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  createdAt: string;
+}
+
+export interface AdminApplication {
+  id: string;
+  status: ApplicationStatus;
+  appliedAt: string;
+  user: { id: string; name: string; email: string };
+  job: { id: string; title: string; company: string };
+}
+
 export interface Pagination {
   page: number;
   limit: number;

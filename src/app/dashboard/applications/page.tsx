@@ -46,7 +46,7 @@ export default function ApplicationsPage() {
             message={getErrorMessage(applicationsQuery.error)}
             onRetry={() => applicationsQuery.refetch()}
           />
-        ) : applicationsQuery.data.length === 0 ? (
+        ) : !applicationsQuery.data || applicationsQuery.data.length === 0 ? (
           <EmptyState
             icon={ClipboardList}
             title="No applications yet"

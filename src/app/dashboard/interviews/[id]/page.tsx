@@ -27,7 +27,15 @@ export default function InterviewPage() {
     queryFn: () => getInterviewById(id),
     enabled: isReady && Boolean(id),
   });
-  const answerMutation = useMutation({ mutationFn: submitAnswer });
+  const answerMutation = useMutation({
+    mutationFn: ({
+      interviewId,
+      input,
+    }: {
+      interviewId: string;
+      input: { questionId: string; answerText: string };
+    }) => submitAnswer(interviewId, input),
+  });
 
   if (!isReady || !user || interviewQuery.isLoading) {
     return (
