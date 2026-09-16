@@ -39,3 +39,65 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export type JobType = "REMOTE" | "ONSITE" | "HYBRID";
+
+export interface Job {
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  location: string;
+  jobType: JobType;
+  experienceLevel: string;
+  skills: string[];
+  salaryMin: number | null;
+  salaryMax: number | null;
+  status: "OPEN" | "CLOSED";
+  createdAt: string;
+}
+
+export interface JobMatch {
+  jobId: string;
+  jobTitle: string;
+  matchScore: number;
+  matched: string[];
+  missing: string[];
+  resumeId: string;
+}
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface Skill {
+  name: string;
+  level: "Beginner" | "Intermediate" | "Strong";
+}
+
+export interface AIAnalysis {
+  id: string;
+  resumeId: string;
+  score: number;
+  level: string;
+  skills: Skill[];
+  strengths: string[];
+  missingSkills: string[];
+  recommendations: string[];
+}
+
+export interface Resume {
+  id: string;
+  userId: string;
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  parsedText: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  aiAnalysis?: AIAnalysis | null;
+}
