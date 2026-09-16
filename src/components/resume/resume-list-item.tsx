@@ -34,6 +34,8 @@ export function ResumeListItem({
   onDelete,
   isAnalyzing,
 }: ResumeListItemProps) {
+  console.log("[ResumeListItem] resume:", resume);
+
   const handleDelete = () => {
     if (window.confirm(`Delete ${resume.fileName}?`)) onDelete(resume.id);
   };

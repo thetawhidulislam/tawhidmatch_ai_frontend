@@ -15,8 +15,14 @@ export async function uploadResume(file: File): Promise<Resume> {
 }
 
 export async function listResumes(): Promise<Resume[]> {
-  const response = await api.get<ApiSuccess<Resume[]>>("/resumes");
-  return response.data.data;
+  const response = await api.get<
+    ApiSuccess<Array<Resume & { aianalysis?: AIAnalysis | null }>>
+  >("/resumes");
+
+  return response.data.data.map(({ aianalysis, ...resume }) => ({
+    ...resume,
+    aiAnalysis: aianalysis ?? null,
+  }));
 }
 
 export async function deleteResume(id: string): Promise<void> {

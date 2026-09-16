@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UploadCloud } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
+import { ResumeListItem } from "@/components/resume/resume-list-item";
+import { ResumeUploadCard } from "@/components/resume/resume-upload-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { LoadingGrid } from "@/components/shared/loading-grid";
 import { PageHeader } from "@/components/shared/page-header";
-import { ResumeAnalysisCard } from "@/components/resume/resume-analysis-card";
-import { ResumeListItem } from "@/components/resume/resume-list-item";
-import { ResumeUploadCard } from "@/components/resume/resume-upload-card";
 import { getErrorMessage } from "@/lib/get-error-message";
 import {
   analyzeResume,
@@ -20,22 +18,17 @@ import {
   listResumes,
   uploadResume,
 } from "@/lib/resumes";
-import { useAuthStore } from "@/store/auth-store";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 
 export default function ResumesPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const user = useAuthStore((state) => state.user);
+  const { user, isReady } = useAuthGuard();
   const [analyzingResumeId, setAnalyzingResumeId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user) router.replace("/login");
-  }, [user, router]);
 
   const resumesQuery = useQuery({
     queryKey: ["resumes"],
     queryFn: listResumes,
-    enabled: Boolean(user),
+    enabled: isReady,
   });
 
   const uploadMutation = useMutation({
@@ -65,7 +58,14 @@ export default function ResumesPage() {
     onError: (error: unknown) => toast.error(getErrorMessage(error)),
   });
 
-  if (!user) return null;
+  if (!isReady || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center gap-2 text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+        <span>Loading...</span>
+      </div>
+    );
+  }
 
   const handleUpload = async (file: File) => {
     await uploadMutation.mutateAsync(file);

@@ -1,27 +1,28 @@
 "use client";
 
-import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useAuthStore } from "@/store/auth-store";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, isReady } = useAuthGuard();
+  const logout = useAuthStore((state) => state.logout);
 
-  // Client-side auth guard. For a stronger guard, move this logic into
-  // middleware.ts later using the persisted cookie/token.
-  useEffect(() => {
-    if (!user) {
-      router.replace("/login");
-    }
-  }, [user, router]);
-
-  if (!user) return null;
+  if (!isReady || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center gap-2 text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+        <span>Loading...</span>
+      </div>
+    );
+  }
 
   const initials = user.name
     .split(" ")
