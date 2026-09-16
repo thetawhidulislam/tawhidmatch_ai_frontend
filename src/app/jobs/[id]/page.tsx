@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ArrowLeft, BriefcaseBusiness, MapPin } from "lucide-react";
@@ -10,6 +11,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ApplyDialog } from "@/components/jobs/apply-dialog";
 import { ScoreBar } from "@/components/shared/score-bar";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { getJobById, getJobMatch } from "@/lib/jobs";
@@ -110,6 +112,7 @@ function MatchScore({ jobId }: { jobId: string }) {
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
+  const [applyDialogOpen, setApplyDialogOpen] = useState(false);
   const jobQuery = useQuery({
     queryKey: ["job", id],
     queryFn: () => getJobById(id),
@@ -184,13 +187,25 @@ export default function JobDetailPage() {
               className="w-full sm:w-auto"
               disabled={job.status === "CLOSED"}
               title={job.status === "CLOSED" ? "This position is closed" : undefined}
-              onClick={() => toast.info("Apply flow coming soon - resume picker not wired yet")}
+              onClick={() => {
+                if (!user) {
+                  toast.info("Please sign in to apply");
+                  return;
+                }
+                if (job.status !== "CLOSED") setApplyDialogOpen(true);
+              }}
             >
               {job.status === "CLOSED" ? "This position is closed" : "Apply Now"}
             </Button>
           </CardFooter>
         </Card>
       </div>
+      <ApplyDialog
+        jobId={job.id}
+        jobTitle={job.title}
+        open={applyDialogOpen}
+        onOpenChange={setApplyDialogOpen}
+      />
     </main>
   );
 }
